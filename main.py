@@ -1,36 +1,41 @@
 import random
 import matplotlib.pyplot as plt
 
+
 def sq_distance(a, b):
     x_dif = a[0]-b[0]
     y_dif = a[1]-b[1]
     return x_dif*x_dif+y_dif*y_dif
 
+
 def generate_random_points(D, n1, n2):
 
     points = []
     sq_size = 1/D
+
     for i in range(D):
         for j in range(D):
             x_min = sq_size*i
             x_max = sq_size+x_min
             y_min = sq_size*j
             y_max = sq_size+y_min
-            
+
             points_in_current_group = n1
-            curgroup = random.choice([1,2])
-            if curgroup==2:
+            curgroup = random.choice([1, 2])
+            if curgroup == 2:
                 points_in_current_group = n2
-            
+
             for _ in range(points_in_current_group):
                 x_cord = random.uniform(x_min, x_max)
                 y_cord = random.uniform(y_min, y_max)
-                points.append([x_cord,y_cord])
-    
+                points.append([x_cord, y_cord])
+
     return points
 
+
 def generate_k_clusters(k, points):
-    centroids = [[random.uniform(0,1), random.uniform(0,1)] for _ in range(k)]
+    centroids = [[random.uniform(0, 1), random.uniform(0, 1)]
+                 for _ in range(k)]
     change = True
     n = len(points)
     cluster = [0 for i in range(n)]
@@ -47,7 +52,7 @@ def generate_k_clusters(k, points):
         count_points = []
         for i in range(k):
             sq_dis_for_each_cluster[i] = 0
-            new_centroids.append([0,0])
+            new_centroids.append([0, 0])
             count_points.append(0)
         for j in range(n):
             point = points[j]
@@ -55,7 +60,7 @@ def generate_k_clusters(k, points):
             min_distance = 1
             for i in range(k):
                 centroid = centroids[i]
-                if sq_distance(point, centroid)<min_distance:
+                if sq_distance(point, centroid) < min_distance:
                     min_distance = sq_distance(point, centroid)
                     min_distance_cluster = i
 
@@ -66,26 +71,33 @@ def generate_k_clusters(k, points):
             new_centroids[min_distance_cluster][0] += point[0]
             new_centroids[min_distance_cluster][1] += point[1]
             count_points[min_distance_cluster] += 1
-        
+
         for i in range(k):
-            if(count_points[i]!=0):
+            if (count_points[i] != 0):
                 new_centroids[i][0] /= count_points[i]
                 new_centroids[i][1] /= count_points[i]
-        
-        if current<sqdis:
+
+        if current < sqdis:
             change = True
             sqdis = current
             centroids = new_centroids
-    
-    return cluster, centroids
-    
 
-if __name__=='__main__':
-    points = generate_random_points(2,5,3)
-    cluster, centroids = generate_k_clusters(3,points)
-    colors = ['blue','red','green']
-    centcolor = ['yellow','black','orange']
+    return cluster, centroids
+
+
+if __name__ == '__main__':
+    D = int(input("Enter the number of cuts in unit length: "))
+    n1 = int(input("Enter the first density parameter: "))
+    n2 = int(input("Enter the second density parameter: "))
+    k = int(input("Enter the number of clusters: "))
+    points = generate_random_points(D, n1, n2)
+    cluster, centroids = generate_k_clusters(k, points)
+    cluster_colors = []
+    for _ in range(k):
+        cluster_colors.append('#%06X' % random.randint(0, 0xFFFFFF))
     print(centroids)
-    plt.scatter([point[0] for point in points], [point[1] for point in points], color=[colors[cluster[i]] for i in range(len(points))])
-    plt.scatter([centroid[0] for centroid in centroids], [centroid[1] for centroid in centroids], color=[centcolor[i] for i in range(len(centcolor))])
+    plt.scatter([point[0] for point in points], [point[1] for point in points], color=[
+                cluster_colors[cluster[i]] for i in range(len(points))])
+    plt.scatter([centroid[0] for centroid in centroids], [centroid[1]
+                                                          for centroid in centroids], color=['blue'])
     plt.show()
