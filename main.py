@@ -101,8 +101,8 @@ if __name__ == "__main__":
     # alpha = float(input("Enter the percentage of first density that is under-reported: "))
     cost = []
     for alpha in range(10,100,10):
-        k1 = max(1 ,int((D*D*(n1+n2))/50))
-        k2 = max(1, int((D*D*(n1  + int((alpha*n1)/(100-alpha)) + n2))/50))
+        k1 = max(1 ,int((D*D*(n1+n2))/1000))
+        k2 = max(1, int((D*D*(n1  + int((alpha*n1)/(100-alpha)) + n2))/1000))
         points , actual_points = generate_random_points(D, n1, n2 , alpha)
     # actual_points = generate_random_points(D, n1  + int((alpha*n1)/100), n2)
         cluster, centroids  = generate_k_clusters(k1, points)
@@ -156,5 +156,8 @@ if __name__ == "__main__":
         #                                                     for centroid in actual_centroids], color=['blue'])    
         # axis[1].set_title("Actual graph")
         # plt.show()
+    plt.title("Graph for value of k :" + str(k1))
+    plt.xlabel("percentage of density under-reported")
+    plt.ylabel("Cost of the algorithm")
     plt.plot(range(10,100,10), cost)
     plt.show()
