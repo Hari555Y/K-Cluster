@@ -1,4 +1,5 @@
 import random
+import math
 import matplotlib.pyplot as plt
 
 
@@ -8,7 +9,7 @@ def sq_distance(a, b):
     return x_dif*x_dif+y_dif*y_dif
 
 
-def generate_random_points(D, n1, n2 , alpha):
+def generate_random_points(D, n1, n2, alpha):
 
     points = []
     actual_points = []
@@ -35,7 +36,7 @@ def generate_random_points(D, n1, n2 , alpha):
                     x_cord = random.uniform(x_min, x_max)
                     y_cord = random.uniform(y_min, y_max)
                     actual_points.append([x_cord, y_cord])
-    return points , actual_points
+    return points, actual_points
 
 
 def generate_k_clusters(k, points):
@@ -96,21 +97,22 @@ if __name__ == "__main__":
     D = int(input("Enter the number of cuts in unit length: "))
     n1 = int(input("Enter the first density parameter: "))
     n2 = int(input("Enter the second density parameter: "))
-  #  k = int(input("Enter the number of clusters: ")) 
+  #  k = int(input("Enter the number of clusters: "))
    # k is now taken as a function of the number of points in the dataset
     # alpha = float(input("Enter the percentage of first density that is under-reported: "))
     cost = []
-    for alpha in range(10,100,10):
-        k1 = max(1 ,int((D*D*(n1+n2))/1000))
-        k2 = max(1, int((D*D*(n1  + int((alpha*n1)/(100-alpha)) + n2))/1000))
-        points , actual_points = generate_random_points(D, n1, n2 , alpha)
+    for alpha in range(10, 100, 10):
+        k1 = max(1, int((D*D*(n1+n2))/3000))
+        k2 = max(1, int((D*D*(n1 + int((alpha*n1)/(100-alpha)) + n2))/3000))
+        points, actual_points = generate_random_points(D, n1, n2, alpha)
     # actual_points = generate_random_points(D, n1  + int((alpha*n1)/100), n2)
-        cluster, centroids  = generate_k_clusters(k1, points)
-        actual_cluster, actual_centroids = generate_k_clusters(k2, actual_points)
+        cluster, centroids = generate_k_clusters(k1, points)
+        actual_cluster, actual_centroids = generate_k_clusters(
+            k2, actual_points)
         sum_of_squares = 0
         actual_sum_of_squares = 0
         for point in actual_points:
-            mini =1
+            mini = 1
             for cen in centroids:
                 mini = min(mini, sq_distance(cen, point))
             sum_of_squares += mini
@@ -141,8 +143,8 @@ if __name__ == "__main__":
         # print(actual_centroids)
         # print(sum_of_squares)
         # print(actual_sum_of_squares)
-        cost.append(sum_of_squares)
-        
+        cost.append(math.log(sum_of_squares))
+
         #figure, axis = plt.subplots(1,2)
 
         # axis[0].scatter([point[0] for point in actual_points], [point[1] for point in actual_points], color=[
@@ -153,11 +155,11 @@ if __name__ == "__main__":
         # axis[1].scatter([point[0] for point in actual_points], [point[1] for point in actual_points], color=[
         #             actual_cluster_colors[actual_cluster[i]] for i in range(len(actual_points))])
         # axis[1].scatter([centroid[0] for centroid in actual_centroids], [centroid[1]
-        #                                                     for centroid in actual_centroids], color=['blue'])    
+        #                                                     for centroid in actual_centroids], color=['blue'])
         # axis[1].set_title("Actual graph")
         # plt.show()
     plt.title("Graph for value of k :" + str(k1))
     plt.xlabel("percentage of density under-reported")
-    plt.ylabel("Cost of the algorithm")
-    plt.plot(range(10,100,10), cost)
+    plt.ylabel("logarithm of Cost of the algorithm")
+    plt.plot(range(10, 100, 10), cost)
     plt.show()
