@@ -1,7 +1,6 @@
 # K Clustering Algorithm when a Group shows Underreporting
-
-import random
 import sys
+import random
 import matplotlib.pyplot as plt
 
 sys.path.insert(0,'D:\Semester7\COD492\K-Clustering')
@@ -12,6 +11,7 @@ def generate_random_points(D, n1, n2 , alpha):
 
     points = []
     actual_points = []
+    groups = [[1 for i in range(D)] for j in range(D)] 
     sq_size = 1/D
     for i in range(D):
         for j in range(D):
@@ -23,6 +23,7 @@ def generate_random_points(D, n1, n2 , alpha):
             curgroup = random.choice([1, 2])
 
             if curgroup==2:
+                groups[i][j] = 2
                 for _ in range(n2):
                     x_cord = random.uniform(x_min, x_max)
                     y_cord = random.uniform(y_min, y_max)
@@ -42,7 +43,7 @@ def generate_random_points(D, n1, n2 , alpha):
                     y_cord = random.uniform(y_min, y_max)
                     actual_points.append([x_cord, y_cord])
 
-    return points , actual_points
+    return points , actual_points, groups
 
 
 
@@ -53,7 +54,7 @@ if __name__ == '__main__':
 
     alpha = float(input("Enter the percentage of first density that is under-reported: "))
     
-    reported_points , actual_points = generate_random_points(D, n1, n2 , alpha)
+    reported_points , actual_points, groups = generate_random_points(D, n1, n2 , alpha)
     k_reported = max(1, int(len(reported_points)/1000))
     k_actual = max(1 ,int(len(actual_points)/1000))
 
