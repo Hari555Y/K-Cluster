@@ -1,4 +1,3 @@
-from cProfile import label
 import matplotlib.pyplot as plt
 from bias import generate_k_clusters, generate_random_points, sq_distance
 
