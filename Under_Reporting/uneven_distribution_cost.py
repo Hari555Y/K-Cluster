@@ -97,8 +97,4 @@ if __name__ == "__main__":
     plt.xlabel("percentage of density under-reported")
     plt.ylabel("Cost of the algorithm")
     plt.plot(range(90, 0, -10), cost)
-<<<<<<< HEAD
     plt.show()
-=======
-    plt.show()
->>>>>>> 7ee003e511e8ae097dd8306998dc2efb4ad5e809

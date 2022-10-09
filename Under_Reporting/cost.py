@@ -42,8 +42,8 @@ if __name__ == "__main__":
 
         reported_sum_of_squares = 0
 
-        for i in range(len(actual_cluster)):
-            point = actual_points[i]
+        for i in range(len(reported_cluster)):
+            point = reported_points[i]
             mini = 1
             for j in range(len(reported_centroids)):
                 dista = sq_distance(reported_centroids[j], point)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
                     mini = dista
             reported_sum_of_squares += mini
 
-        cost.append(reported_sum_of_squares)
+        cost.append(reported_sum_of_squares/len(reported_points))
         
     plt.title(f"Graph for {len(actual_points)} points")
     plt.xlabel("percentage of density under-reported")
