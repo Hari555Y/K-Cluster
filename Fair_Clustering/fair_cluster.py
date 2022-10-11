@@ -47,6 +47,22 @@ def generate_fair_k_clusters(k, points):
             change = True
             sqdis = current
             centroids = line_cluster(points, partition, k)
+        
+        partition = [[] for i in range(k)]
+        for j in range(n):
+            point = points[j]
+            min_distance_cluster = 0
+            min_distance = 1
+            for i in range(k):
+                centroid = centroids[i]
+                if sq_distance(point, centroid) < min_distance:
+                    min_distance = sq_distance(point, centroid)
+                    min_distance_cluster = i
+
+            partition[min_distance_cluster].append(point)
+            current += min_distance
+
+            sq_dis_for_each_cluster[min_distance_cluster] += min_distance
 
     return partition, centroids
 
