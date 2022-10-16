@@ -249,4 +249,5 @@ if __name__ == "__main__":
 
     plt.plot(range(90,0,-10), unpriviledged_cost, label='Unpriviledged Cost')
     plt.plot(range(90,0,-10), priviledged_cost, label='Priviledged Cost')
+    plt.legend()
     plt.show()
