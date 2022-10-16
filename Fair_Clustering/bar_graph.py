@@ -54,5 +54,8 @@ if __name__ == "__main__":
     ax.bar(x2, priviledged_cost, 0.4, label='Priviledged Cost')
     ax.set_xticks(range(5))
     ax.set_xticklabels(alphas)
+    plt.title("Average Cost vs Underreporting Percentage")
+    plt.xlabel("Underreporting Percentage Pairs")
+    plt.ylabel("Average Cost")
     plt.legend()
     plt.show()
