@@ -1,4 +1,3 @@
-from cProfile import label
 import matplotlib.pyplot as plt
 from bias import generate_k_clusters, generate_random_points, sq_distance
 
@@ -13,14 +12,12 @@ if __name__ == "__main__":
     priviledged_cost = []
     unpriviledged_cost = []
     total_cost = []
-    # k_values = []
+
     alpha = 50
     for k_reported in range(90, 0, -10):
     
         reported_points = []
-        # k_reported = max(1, int(len(reported_points)/1000))
         k_actual = max(1 ,int(k_reported*2))
-        # k_values.append(k_actual)
         cur_point = 0
 
         for i in range(D):
@@ -74,24 +71,9 @@ if __name__ == "__main__":
         unpriviledged_cost.append(sum_of_squares_unpriviledged)
         total_cost.append(sum_of_squares_priviledged+sum_of_squares_unpriviledged)
 
-    
-    # plt.figure(1, figsize= (10, 7))
-    # plt.subplot(3,1,1)
     plt.title("Priviledged Group Cost")
     plt.xlabel("Value of k")
     plt.ylabel("Priviledged Cost")
     plt.plot(range(90 , 0, -10), priviledged_cost)
 
-    # plt.subplot(3,1,2)
-    # plt.title("UnPriviledged Group Cost")
-    # plt.xlabel("percentage of density under-reported")
-    # plt.ylabel("UnPriviledged Cost")
-    # plt.plot(range(90, 0, -10), unpriviledged_cost)
-
-    # plt.subplot(3,1,3)
-    # plt.title("Total Cost")
-    # plt.xlabel("percentage of density under-reported")
-    # plt.ylabel("Total Cost")
-    # plt.plot(range(90, 0, -10), total_cost)
-    # plt.tight_layout()
     plt.show()

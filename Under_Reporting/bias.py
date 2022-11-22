@@ -1,9 +1,9 @@
 # K Clustering Algorithm when a Group shows Underreporting
-import sys
 import random
 import matplotlib.pyplot as plt
+import sys
 
-sys.path.insert(0,'C:/Users/HARIKESH/Desktop/github/K-Cluster')
+sys.path.insert(0,'C:/Users/HARIKESH/Desktop/K-Clustering')
 from main import sq_distance, generate_k_clusters
 
 
@@ -27,8 +27,8 @@ def generate_random_points(D, n1, n2 , alpha):
                 for _ in range(n2):
                     x_cord = random.uniform(x_min, x_max)
                     y_cord = random.uniform(y_min, y_max)
-                    points.append([x_cord, y_cord])
-                    actual_points.append([x_cord, y_cord])
+                    points.append([x_cord, y_cord, 2])
+                    actual_points.append([x_cord, y_cord, 2])
 
             else:
                 num_points_reported = int((100-alpha) * n1 / 100)
@@ -36,12 +36,12 @@ def generate_random_points(D, n1, n2 , alpha):
                     x_cord = random.uniform(x_min, x_max)
                     y_cord = random.uniform(y_min, y_max)
                     points.append([x_cord, y_cord])
-                    actual_points.append([x_cord, y_cord])
+                    actual_points.append([x_cord, y_cord, 1])
                 
                 for _ in range(n1 - num_points_reported):
                     x_cord = random.uniform(x_min, x_max)
                     y_cord = random.uniform(y_min, y_max)
-                    actual_points.append([x_cord, y_cord])
+                    actual_points.append([x_cord, y_cord, 1])
 
     return points , actual_points, groups
 
