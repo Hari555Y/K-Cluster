@@ -4,9 +4,49 @@ import random
 
 from matplotlib import pyplot as plt
 
-sys.path.insert(0,'C:/Users/HARIKESH/Desktop/K-Clustering/Under_Reporting')
-from bias import generate_random_points
-from main import sq_distance
+def sq_distance(a, b):
+    x_dif = a[0]-b[0]
+    y_dif = a[1]-b[1]
+    return x_dif*x_dif+y_dif*y_dif
+
+def generate_random_points(D, n1, n2 , alpha):
+    points = []
+    actual_points = []
+    groups = [[1 for i in range(D)] for j in range(D)] 
+    sq_size = 1/D
+    for i in range(D):
+        for j in range(D):
+            x_min = sq_size*i
+            x_max = sq_size+x_min
+            y_min = sq_size*j
+            y_max = sq_size+y_min
+
+            curgroup = 2
+            if i==0 and j==0:
+                curgroup = 1
+
+            if curgroup==2:
+                groups[i][j] = 2
+                for _ in range(n2):
+                    x_cord = random.uniform(x_min, x_max)
+                    y_cord = random.uniform(y_min, y_max)
+                    points.append([x_cord, y_cord, 2])
+                    actual_points.append([x_cord, y_cord, 2])
+
+            else:
+                num_points_reported = int((100-alpha) * n1 / 100)
+                for _ in range(num_points_reported):
+                    x_cord = random.uniform(x_min, x_max)
+                    y_cord = random.uniform(y_min, y_max)
+                    points.append([x_cord, y_cord, 1])
+                    actual_points.append([x_cord, y_cord, 1])
+                
+                for _ in range(n1 - num_points_reported):
+                    x_cord = random.uniform(x_min, x_max)
+                    y_cord = random.uniform(y_min, y_max)
+                    actual_points.append([x_cord, y_cord, 1])
+
+    return points , actual_points, groups
 
 def generate_fair_k_clusters(k, points):
     centroids = [[random.uniform(0, 1), random.uniform(0, 1)]
@@ -148,8 +188,12 @@ def line_cluster(points, partition, k):
 
     centroids = []
     for i in range(k):
-        centix = ((line_size[i]-x[i])*avga[i][0] + (x[i]*avgb[i][0]))/line_size[i]
-        centiy = ((line_size[i]-x[i])*avga[i][1] + (x[i]*avgb[i][1]))/line_size[i]
+        if line_size[i] == 0:
+            centix = avga[i][0]
+            centiy = avga[i][1]
+        else:
+            centix = ((line_size[i]-x[i])*avga[i][0] + (x[i]*avgb[i][0]))/line_size[i]
+            centiy = ((line_size[i]-x[i])*avga[i][1] + (x[i]*avgb[i][1]))/line_size[i]
         centroids.append([centix, centiy])
     
     return centroids

@@ -3,7 +3,7 @@ import random
 import matplotlib.pyplot as plt
 import sys
 
-sys.path.insert(0,'D:/Semester7/COD492/K-CLUSTERING')
+sys.path.insert(0,'C:/Users/HARIKESH/Desktop/K-Clustering')
 from main import sq_distance, generate_k_clusters
 
 
