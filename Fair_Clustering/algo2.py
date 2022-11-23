@@ -45,7 +45,7 @@ def generate_random_points(D, n1, n2 , alpha):
             y_min = sq_size*j
             y_max = sq_size+y_min
 
-            curgroup = random.choice([1, 2])
+            curgroup = random.choice([1,2])
 
             if curgroup==2:
                 groups[i][j] = 2
@@ -93,27 +93,40 @@ def generate_k_clusters(k, reported_points):
 
         for col in range(n):
             totalsum = xsum(fractions[row][col] for row in range (r))
-            totalsum30percent = totalsum*(min(1, (g1/r)+0.1))
+            totalsum30percent = totalsum*(max(0, (g1/r) - 0.01))
             m+= xsum(fractions[row][col] for row in range(r) if reported_points[row][2] == 1) >= totalsum30percent
 
 
 
         for col in range(n):
             totalsum = xsum(fractions[row][col] for row in range (r))
-            totalsum30percent = totalsum*(min(1, (g2/r)+0.1))
+            totalsum30percent = totalsum*(max(0, (g2/r) - 0.01))
             m+= xsum(fractions[row][col] for row in range(r) if reported_points[row][2] == 2) >= totalsum30percent
 
         m.objective = xsum((fractions[i][j]/100)*(sq_distance(centroids[j] , reported_points[i])) for i in range(r) for j in range(n))
         m.optimize()
 
         for j in range(n):
+            centroids[j][0] = 0
+            centroids[j][1] = 0
+            totx = 0
             for i in range(r):
                 frac[i][j] = fractions[i][j]/100
+                centroids[j][0] += frac[i][j]*reported_points[i][0]
+                totx += frac[i][j]
+                centroids[j][1] += frac[i][j]*reported_points[i][1]
+            
+            if totx == 0:
+                centroids[j] = [random.uniform(0,1), random.uniform(0,1)]
+            else:
+                centroids[j][0] /= totx
+                centroids[j][1] /= totx
+
         
-        upc = 0.000001+sum(frac[i][j]*(sq_distance(centroids[j] , reported_points[i])) for i in range(r) for j in range(n) if reported_points[i][2]==1)
-        tu = 0.000001+sum(1 for i in range(r) if reported_points[i][2]==1)
-        pc = 0.000001+sum(frac[i][j]*(sq_distance(centroids[j] , reported_points[i])) for i in range(r) for j in range(n) if reported_points[i][2]==2)
-        tp = 0.000002+r - tu
+    upc = 0.000001+sum(frac[i][j]*(sq_distance(centroids[j] , reported_points[i])) for i in range(r) for j in range(n) if reported_points[i][2]==1)
+    tu = 0.000001+sum(1 for i in range(r) if reported_points[i][2]==1)
+    pc = 0.000001+sum(frac[i][j]*(sq_distance(centroids[j] , reported_points[i])) for i in range(r) for j in range(n) if reported_points[i][2]==2)
+    tp = 0.000002+r - tu
     
         
     return frac, centroids, upc/tu, pc/tp
@@ -127,7 +140,7 @@ unp_costs = []
 p_costs = []
 costs = []
 reported_points, actual_points, groups = generate_random_points(D, n1, n2, 0)
-for alpha in range(90, 10, -10):
+for alpha in range(90, 0, -10):
     reported_points = []
     cur_point = 0
 
@@ -149,19 +162,17 @@ for alpha in range(90, 10, -10):
                     reported_points.append(point)
                 cur_point += n1
     
-    k = max(1, len(reported_points)//200)
+    k = max(1,len(reported_points)//100)
     frac, centroids, upc, pc = generate_k_clusters(k, reported_points)
 
     unp_costs.append(upc)
     p_costs.append(pc)
 
-# for i in p_costs:
-#     print(i)
 
-plt.plot(range(90,10,-10), p_costs, label='Priviledged Average Cost')
-plt.plot(range(90,10,-10), unp_costs, label='Unpriviledged Average Cost')
-plt.xlabel("Percentage density underreporting")
+plt.plot(range(90,0,-10), p_costs, label='Priviledged Average Cost')
+plt.plot(range(90,0,-10), unp_costs, label='Unpriviledged Average Cost')
+plt.xlabel("Percentage Underreporting")
 plt.ylabel("Average Cost")
-plt.title("Average Cost vs Underreporting for Both the Groups")
+plt.title("Average Cost vs Underreporting for both groups")
 plt.legend()
 plt.show()
